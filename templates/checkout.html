@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field_error, error_attrs %}
+{% block title %}Checkout | {{ biz.business_name }}{% endblock %}
+{% macro req() %}<span class="req" aria-hidden="true">*</span>{% endmacro %}
+{% block content %}
+{% set pay_badges = {'cash_app': '$', 'zelle': 'Z', 'apple_pay': 'Pay', 'chime': 'C', 'bank_transfer': 'ACH', 'venmo': 'V', 'paypal': 'PP', 'eu_bank_transfer': '€', 'card': 'Card', 'google_pay': 'G'} %}
+<section class="page-head checkout-head">
+  <div class="wrap">
+    <h1>Checkout</h1>
+    <p class="checkout-lede">Send us your details and we'll confirm freight and payment with you. Nothing is charged today.</p>
+    <ol class="checkout-steps" aria-label="Checkout progress">
+      <li class="is-done"><a href="/cart">Cart</a></li>
+      <li aria-current="step">Your details</li>
+      <li>We confirm freight &amp; payment</li>
+    </ol>
+  </div>
+</section>
+
+<section class="section checkout-section">
+  <div class="wrap checkout-grid">
+    <form class="checkout-form" method="post" action="/checkout" novalidate data-checkout>
+      <div class="form-alert" role="alert" data-form-alert{% if not errors %} hidden{% endif %}>
+        <strong>Your order hasn't been sent yet.</strong>
+        <span data-form-alert-text>Please fill in the highlighted fields{% if errors %} ({{ errors|length }}){% endif %}.</span>
+      </div>
+      <p class="required-key"><span class="req" aria-hidden="true">*</span> Required</p>
+
+      <fieldset class="checkout-panel" data-panel>
+        <legend><span class="panel-num" data-num="01">01</span>Contact details</legend>
+        <div class="form-grid">
+          <div class="field field-wide">
+            <label for="co-name">Full name {{ req() }}</label>
+            <input id="co-name" name="name" required minlength="2" maxlength="120" autocomplete="name" placeholder="First and last name" value="{{ values.get('name', '') }}" data-message="Please enter your name."{{ error_attrs(errors, 'name') }}>
+            {{ field_error(errors, 'name') }}
+          </div>
+          <div class="field">
+            <label for="co-phone">Phone {{ req() }}</label>
+            <input id="co-phone" name="phone" type="tel" required maxlength="40" autocomplete="tel" placeholder="(850) 555-0123" value="{{ values.get('phone', '') }}" data-min-digits="10" data-message="Please enter a full phone number, including the area code."{{ error_attrs(errors, 'phone') }}>
+            {{ field_error(errors, 'phone') }}
+          </div>
+          <div class="field">
+            <label for="co-email">Email {{ req() }}</label>
+            <input id="co-email" name="email" type="email" required maxlength="200" autocomplete="email" placeholder="you@example.com" value="{{ values.get('email', '') }}" data-message="Please enter a valid email address."{{ error_attrs(errors, 'email') }}>
+            {{ field_error(errors, 'email') }}
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="checkout-panel" data-panel>
+        <legend><span class="panel-num" data-num="02">02</span>Shipping details</legend>
+        <div class="form-grid form-grid-address">
+          <div class="field field-wide">
+            <label for="co-address">Street address {{ req() }}</label>
+            <input id="co-address" name="address" required minlength="5" maxlength="200" autocomplete="address-line1" placeholder="12 Dock Road" value="{{ values.get('address', '') }}" data-street data-message="Please enter the street number and street name, e.g. 12 Dock Road."{{ error_attrs(errors, 'address') }}>
+            {{ field_error(errors, 'address') }}
+          </div>
+          <div class="field field-wide">
+            <label for="co-address2">Apartment, suite, unit <span class="optional">(only if you have one)</span></label>
+            <input id="co-address2" name="address2" maxlength="200" autocomplete="address-line2" value="{{ values.get('address2', '') }}">
+          </div>
+          <div class="field">
+            <label for="co-city">City {{ req() }}</label>
+            <input id="co-city" name="city" required maxlength="100" autocomplete="address-level2" value="{{ values.get('city', '') }}" data-message="Please enter the city."{{ error_attrs(errors, 'city') }}>
+            {{ field_error(errors, 'city') }}
+          </div>
+          <div class="field">
+            <label for="co-state">State {{ req() }}</label>
+            <select id="co-state" name="state" required autocomplete="address-level1" data-message="Please choose a state."{{ error_attrs(errors, 'state') }}>
+              <option value="">Select…</option>
+              {% for s in states %}<option value="{{ s }}" {% if values.get('state') == s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+            </select>
+            {{ field_error(errors, 'state') }}
+          </div>
+          <div class="field">
+            <label for="co-zip">ZIP code {{ req() }}</label>
+            <input id="co-zip" name="shipping_zip" required maxlength="10" inputmode="numeric" pattern="\d{5}(-\d{4})?" autocomplete="postal-code" placeholder="32424" value="{{ values.get('shipping_zip', '') }}" data-message="Please enter a 5-digit US ZIP."{{ error_attrs(errors, 'shipping_zip') }}>
+            {{ field_error(errors, 'shipping_zip') }}
+          </div>
+        </div>
+
+        <div class="field delivery-field" id="delivery_type">
+          <span class="field-label" id="co-delivery-label">Delivery location {{ req() }}</span>
+          <p class="field-hint">Where is the freight truck delivering? It changes the freight price.</p>
+          <div class="choice-grid" role="radiogroup" aria-labelledby="co-delivery-label" aria-required="true" data-radio-group data-message="Please choose where the motor is being delivered.">
+            {% for value, label, hint in delivery_types %}
+            <label class="choice">
+              <input type="radio" name="delivery_type" value="{{ value }}" required {% if values.get('delivery_type') == value %}checked{% endif %}>
+              <span><strong>{{ label }}</strong><small>{% if value == 'local_pickup' %}Collect from us in {{ biz.business_location }}.{% else %}{{ hint }}{% endif %}</small></span>
+            </label>
+            {% endfor %}
+          </div>
+          {{ field_error(errors, 'delivery_type') }}
+        </div>
+        <p class="panel-note">We'll quote the freight cost to this address before anything is charged. <a href="/shipping">How shipping works</a></p>
+      </fieldset>
+
+      <fieldset class="checkout-panel" data-panel>
+        <legend><span class="panel-num" data-num="03">03</span>How should we reach you?</legend>
+        <div class="form-grid">
+          <div class="field">
+            <span class="field-label" id="co-contact-pref-label">Contact preference</span>
+            <div class="segmented" role="radiogroup" aria-labelledby="co-contact-pref-label">
+              {% for option in contact_preferences %}
+              <label><input type="radio" name="contact_preference" value="{{ option }}" {% if values.get('contact_preference', contact_preferences[0]) == option %}checked{% endif %}><span>{{ option }}</span></label>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="field">
+            <label for="co-best-time">Best time to reach you <span class="optional">(optional)</span></label>
+            <input id="co-best-time" name="best_time" maxlength="100" placeholder="e.g. weekday evenings" value="{{ values.get('best_time', '') }}">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="checkout-panel" data-panel id="payment_method">
+        <legend><span class="panel-num" data-num="04">04</span>Payment method</legend>
+        <p class="panel-intro">Choose how you'd like to pay {{ req() }}. We send the payment details once we've confirmed your order.</p>
+        <div class="pay-options" role="radiogroup" aria-label="Payment method" aria-required="true" data-radio-group data-message="Please choose how you'd like to pay.">
+          {% for value, label, detail in payment_methods %}
+          <label class="pay-option">
+            <input type="radio" name="payment_method" value="{{ value }}" required {% if values.get('payment_method') == value %}checked{% endif %}>
+            <span class="pay-badge" aria-hidden="true">{{ pay_badges.get(value, label[:1]) }}</span>
+            <span class="pay-text"><strong>{{ label }}</strong><small>{{ detail }}</small></span>
+          </label>
+          {% endfor %}
+        </div>
+        {{ field_error(errors, 'payment_method') }}
+      </fieldset>
+
+      <div class="checkout-submit">
+        <button class="btn btn-wide btn-arrow checkout-button" type="submit">Submit order request · {{ subtotal|money }}</button>
+        <p class="form-note">We'll confirm freight, the final total and payment with you before anything is charged.</p>
+      </div>
+    </form>
+
+    <aside class="order-summary" aria-labelledby="summary-title">
+      <div class="summary-head">
+        <h2 id="summary-title">Your order</h2>
+        <button class="summary-toggle" type="button" aria-expanded="false" data-summary-toggle>Show items</button>
+        <a href="/cart">Edit cart</a>
+      </div>
+      <ul class="summary-list">
+        {% for m in motors %}
+        {% set photos = motor_photos(m) %}
+        <li>
+          <span class="summary-thumb" aria-hidden="true">
+            {% if photos %}<img src="{{ photos[0] }}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">{% else %}<strong>{{ m.hp }}</strong><em>HP</em>{% endif %}
+          </span>
+          <span class="summary-item">
+            <span class="card-make">{{ m.make }}</span>
+            <span class="summary-name">{{ m.name }}</span>
+            <span class="summary-spec">{{ m.hp }} HP · {{ m.stroke }}-stroke{% if m.shaft %} · {{ m.shaft }} shaft{% endif %}</span>
+          </span>
+          <span class="summary-price">{{ m.price_usd|money }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      <dl class="totals">
+        <div><dt>Subtotal ({{ motors|length }} motor{{ 's' if motors|length != 1 }})</dt><dd>{{ subtotal|money }}</dd></div>
+        <div><dt>Freight</dt><dd>Quoted for your address</dd></div>
+        <div class="totals-due"><dt>Charged today</dt><dd>$0.00</dd></div>
+      </dl>
+      <ul class="trust-list">
+        <li><strong>Nothing charged online.</strong> You approve the final total first.</li>
+        <li><strong>Freight quoted to your door</strong> before you pay.</li>
+        <li><strong>Crated and shipped</strong> to all 50 states.</li>
+      </ul>
+      <p class="summary-help">Questions? <a href="{{ biz.phone_url }}">Call {{ biz.phone_display }}</a> or <a href="{{ biz.whatsapp_url }}" rel="noopener">WhatsApp us</a>.</p>
+    </aside>
+  </div>
+</section>
+
+<script>
+(function () {
+  var form = document.querySelector('[data-checkout]');
+  if (!form) return;
+  var alertBox = form.querySelector('[data-form-alert]');
+  var alertText = form.querySelector('[data-form-alert-text]');
+
+  function problem(el) {
+    if (el.type === 'radio') return null;
+    var value = el.value.trim();
+    if (el.required && !value) return el.dataset.message || 'This field is required.';
+    if (!value) return null;
+    if (el.dataset.minDigits && value.replace(/\D/g, '').length < Number(el.dataset.minDigits)) return el.dataset.message;
+    if (el.hasAttribute('data-street') && (value.length < 5 || !/\d/.test(value) || !/[a-z]/i.test(value))) return el.dataset.message;
+    if (el.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) return el.dataset.message;
+    if (el.pattern && !new RegExp('^(?:' + el.pattern + ')$').test(value)) return el.dataset.message;
+    return null;
+  }
+
+  function errorFor(container, id) {
+    var existing = container.querySelector('.field-error');
+    if (!existing) {
+      existing = document.createElement('p');
+      existing.className = 'field-error';
+      existing.id = id;
+      container.appendChild(existing);
+    }
+    return existing;
+  }
+
+  function showField(el, message) {
+    var field = el.closest('.field');
+    if (message) {
+      var err = errorFor(field, el.id + '-error');
+      err.textContent = message;
+      el.setAttribute('aria-invalid', 'true');
+      el.setAttribute('aria-describedby', err.id);
+    } else {
+      var old = field.querySelector('.field-error');
+      if (old) old.remove();
+      el.removeAttribute('aria-invalid');
+      el.removeAttribute('aria-describedby');
+    }
+  }
+
+  function checkGroup(group) {
+    var picked = group.querySelector('input:checked');
+    var holder = group.parentElement;
+    var old = holder.querySelector(':scope > .field-error');
+    group.classList.toggle('is-invalid', !picked);
+    if (!picked) {
+      if (!old) {
+        old = document.createElement('p');
+        old.className = 'field-error';
+        holder.insertBefore(old, group.nextSibling);
+      }
+      old.textContent = group.dataset.message;
+    } else if (old) {
+      old.remove();
+    }
+    return !!picked;
+  }
+
+  function panelComplete(panel) {
+    var ok = true;
+    panel.querySelectorAll('input:not([type=radio]), select').forEach(function (el) { if (problem(el)) ok = false; });
+    panel.querySelectorAll('[data-radio-group]').forEach(function (g) { if (!g.querySelector('input:checked')) ok = false; });
+    panel.classList.toggle('is-complete', ok);
+  }
+
+  function refreshPanels() { form.querySelectorAll('[data-panel]').forEach(panelComplete); }
+
+  form.querySelectorAll('input:not([type=radio]), select').forEach(function (el) {
+    el.addEventListener('blur', function () { if (el.value.trim() || el.getAttribute('aria-invalid')) showField(el, problem(el)); refreshPanels(); });
+    el.addEventListener('input', function () { if (el.getAttribute('aria-invalid')) showField(el, problem(el)); refreshPanels(); });
+    el.addEventListener('change', refreshPanels);
+  });
+  form.querySelectorAll('[data-radio-group]').forEach(function (group) {
+    group.addEventListener('change', function () { if (group.classList.contains('is-invalid')) checkGroup(group); refreshPanels(); });
+  });
+
+  form.addEventListener('submit', function (event) {
+    var first = null, count = 0;
+    form.querySelectorAll('input:not([type=radio]), select').forEach(function (el) {
+      var message = problem(el);
+      showField(el, message);
+      if (message) { count++; if (!first) first = el; }
+    });
+    form.querySelectorAll('[data-radio-group]').forEach(function (group) {
+      if (!checkGroup(group)) { count++; if (!first) first = group.querySelector('input'); }
+    });
+    if (count) {
+      event.preventDefault();
+      alertText.textContent = 'Please fill in the highlighted field' + (count > 1 ? 's' : '') + ' (' + count + ').';
+      alertBox.hidden = false;
+      first.closest('.field, .checkout-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(function () { first.focus({ preventScroll: true }); }, 350);
+    } else {
+      alertBox.hidden = true;
+      form.querySelector('.checkout-button').setAttribute('aria-busy', 'true');
+    }
+  });
+
+  // On phones the order summary starts folded so the form is near the top.
+  var summary = document.querySelector('.order-summary');
+  var summaryToggle = document.querySelector('[data-summary-toggle]');
+  if (summary && summaryToggle) {
+    summaryToggle.addEventListener('click', function () {
+      var open = summary.classList.toggle('is-open');
+      summaryToggle.setAttribute('aria-expanded', String(open));
+      summaryToggle.textContent = open ? 'Hide items' : 'Show items';
+    });
+  }
+
+  refreshPanels();
+  var serverError = form.querySelector('[aria-invalid="true"]');
+  if (serverError) serverError.closest('.field').scrollIntoView({ block: 'center' });
+})();
+</script>
+{% endblock %}

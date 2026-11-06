@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% from "_macros.html" import motor_card %}
+{% block title %}{{ motor.name }} | {{ biz.business_name }}{% endblock %}
+{% block content %}
+{% set photos = motor_photos(motor) %}
+<section class="section">
+  <div class="wrap">
+    <p class="breadcrumb"><a href="/motors">← All motors</a></p>
+    <div class="detail-grid">
+      <div class="gallery" data-gallery>
+        <div class="gallery-main">
+          <span class="placeholder placeholder-lg"{% if photos %} aria-hidden="true"{% endif %}><strong>{{ motor.hp }}</strong><em>HP</em><span>Photo coming soon</span></span>
+          {% if photos %}
+          <img src="{{ photos[0] }}" alt="{{ motor.name }}" data-gallery-main referrerpolicy="no-referrer" onerror="this.remove()">
+          {% endif %}
+        </div>
+        {% if photos|length > 1 %}
+        <div class="gallery-thumbs">
+          {% for photo in photos %}
+          <button type="button" data-gallery-thumb="{{ photo }}" aria-label="Show photo {{ loop.index }} of {{ photos|length }}" {% if loop.first %}aria-current="true"{% endif %}>
+            <img src="{{ photo }}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">
+          </button>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="detail-info">
+        <p class="eyebrow">{{ motor.make }}</p>
+        <h1>{{ motor.name }}</h1>
+        {% if motor.badge and motor.status != 'sold' %}<span class="badge badge-inline">{{ motor.badge }}</span>{% endif %}
+        <p class="motor-description pre-wrap">{{ motor.description or motor_summary(motor) }}</p>
+        {% if motor.status == 'sold' %}
+        <p class="sold-note">This motor has been sold.</p>
+        <a class="btn" href="/motors">See available motors</a>
+        {% else %}
+        <div class="price price-lg">{{ motor.price_usd|money }}<small>+ shipping</small></div>
+        {% if motor.price_usd is none %}
+        <a class="btn btn-wide btn-arrow" href="/quote?motor={{ motor.id }}" data-quote data-motor="{{ motor.name }}">Request this motor</a>
+        {% elif motor.id in cart_ids(request) %}
+        <a class="btn btn-wide btn-arrow" href="/cart">In your cart: view cart</a>
+        {% else %}
+        <form method="post" action="/cart/add">
+          <input type="hidden" name="motor_id" value="{{ motor.id }}">
+          <button class="btn btn-wide btn-arrow" type="submit">Add to cart</button>
+        </form>
+        {% endif %}
+        <p class="detail-contact">
+          Or talk to us: <a href="{{ biz.whatsapp_url }}" rel="noopener">WhatsApp</a> ·
+          <a href="{{ biz.phone_url }}">{{ biz.phone_display }}</a>
+        </p>
+        {% endif %}
+        <table class="spec-table">
+          <caption>Specifications</caption>
+          <tbody>
+            <tr><th scope="row">Make</th><td>{{ motor.make }}</td></tr>
+            <tr><th scope="row">Model</th><td>{{ motor.model|dash }}</td></tr>
+            <tr><th scope="row">Year</th><td>{{ motor.year|dash }}</td></tr>
+            <tr><th scope="row">HP</th><td>{{ motor.hp }}</td></tr>
+            <tr><th scope="row">Stroke</th><td>{{ motor.stroke }}-Stroke</td></tr>
+            <tr><th scope="row">Cylinders</th><td>{{ motor.cylinders|dash }}</td></tr>
+            <tr><th scope="row">Shaft</th><td>{{ motor.shaft|dash }}</td></tr>
+            <tr><th scope="row">Hours</th><td>{{ motor.hours|number }}</td></tr>
+            <tr><th scope="row">Condition</th><td>{{ motor.condition|dash }}</td></tr>
+            <tr><th scope="row">Notes</th><td>{{ motor.notes|dash }}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% if similar %}
+<section class="section section-mist">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2 class="tracked">You might also like</h2>
+    </div>
+    <div class="motor-grid stagger">
+      {% for m in similar %}{{ motor_card(m) }}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

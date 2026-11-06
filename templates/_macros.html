@@ -1,0 +1,78 @@
+{% macro motor_card(m) %}
+{% set photos = motor_photos(m) %}
+<article class="card">
+  <a class="card-media" href="/motors/{{ m.id }}" tabindex="-1" aria-hidden="true">
+    <span class="placeholder"><strong>{{ m.hp }}</strong><em>HP</em><span>Photo coming soon</span></span>
+    {% if photos %}
+    <img src="{{ photos[0] }}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">
+    {% endif %}
+    <span class="tag">{{ 'Four Stroke' if m.stroke == 4 else 'Two Stroke' }}</span>
+    {% if m.badge %}<span class="badge">{{ m.badge }}</span>{% endif %}
+  </a>
+  <div class="card-body">
+    <p class="card-make">{{ m.make }}</p>
+    <h3><a href="/motors/{{ m.id }}">{{ m.name }}</a></h3>
+    <p class="card-specs">
+      {{ m.hp }} HP{% if m.cylinders %} · {{ m.cylinders }}-cyl{% endif %}{% if m.shaft %} · {{ m.shaft }} shaft{% endif %}{% if m.hours is not none %} · {{ m.hours|number }} hrs{% endif %}
+    </p>
+    <div class="card-foot">
+      <div class="price">{{ m.price_usd|money }}<small>+ shipping</small></div>
+      {% if m.price_usd is not none %}
+      <form method="post" action="/cart/add">
+        <input type="hidden" name="motor_id" value="{{ m.id }}">
+        <button class="btn btn-sm" type="submit" aria-label="Add {{ m.name }} to cart">Add to cart</button>
+      </form>
+      {% else %}
+      <a class="btn btn-sm" href="/quote?motor={{ m.id }}" data-quote data-motor="{{ m.name }}">Request</a>
+      {% endif %}
+    </div>
+  </div>
+</article>
+{% endmacro %}
+
+{% macro field_error(errors, name) %}
+{% if errors.get(name) %}<p class="field-error" id="{{ name }}-error">{{ errors[name] }}</p>{% endif %}
+{% endmacro %}
+
+{% macro error_attrs(errors, name) %}{% if errors.get(name) %} aria-invalid="true" aria-describedby="{{ name }}-error"{% endif %}{% endmacro %}
+
+{% macro quote_form(values, errors, prefix) %}
+<form class="quote-form" method="post" action="/quote">
+  <div class="form-grid">
+    <div class="field">
+      <label for="{{ prefix }}-name">Name</label>
+      <input id="{{ prefix }}-name" name="name" required maxlength="120" autocomplete="name" value="{{ values.get('name', '') }}">
+      {{ field_error(errors, 'name') }}
+    </div>
+    <div class="field">
+      <label for="{{ prefix }}-email">Email</label>
+      <input id="{{ prefix }}-email" name="email" type="email" required maxlength="200" autocomplete="email" value="{{ values.get('email', '') }}">
+      {{ field_error(errors, 'email') }}
+    </div>
+    <div class="field">
+      <label for="{{ prefix }}-phone">Phone / WhatsApp</label>
+      <input id="{{ prefix }}-phone" name="phone" type="tel" required maxlength="40" autocomplete="tel" value="{{ values.get('phone', '') }}">
+      {{ field_error(errors, 'phone') }}
+    </div>
+    <div class="field">
+      <label for="{{ prefix }}-zip">Shipping ZIP <span class="optional">(optional)</span></label>
+      <input id="{{ prefix }}-zip" name="shipping_zip" maxlength="10" inputmode="numeric" autocomplete="postal-code" value="{{ values.get('shipping_zip', '') }}">
+      {{ field_error(errors, 'shipping_zip') }}
+    </div>
+    <div class="field field-wide">
+      <label for="{{ prefix }}-motor">Motor of interest</label>
+      <input id="{{ prefix }}-motor" name="motor_of_interest" maxlength="200" data-motor-input value="{{ values.get('motor_of_interest', '') }}">
+    </div>
+    <div class="field field-wide">
+      <label for="{{ prefix }}-message">Message</label>
+      <textarea id="{{ prefix }}-message" name="message" rows="4" required maxlength="5000">{{ values.get('message', '') }}</textarea>
+      {{ field_error(errors, 'message') }}
+    </div>
+  </div>
+  <div class="hp-field" aria-hidden="true">
+    <label>Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label>
+  </div>
+  <button class="btn" type="submit">Send enquiry</button>
+  <p class="form-note">This sends us a question and doesn't place an order. To buy a motor, add it to your cart.</p>
+</form>
+{% endmacro %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "_macros.html" import quote_form %}
+{% block title %}Get a Quote | {{ biz.business_name }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow eyebrow-light">Quote</p>
+    <h1>Request a quote</h1>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap narrow">
+    {% if errors %}<p class="form-alert" role="alert">Please check the highlighted fields and try again.</p>{% endif %}
+    {{ quote_form(values, errors, 'page') }}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% from "_macros.html" import motor_card %}
+{% block title %}Outboard Motors | {{ biz.business_name }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <h1>Outboards</h1>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <p class="filter-title">Filter by</p>
+    <nav class="filter-bar" aria-label="Filter motors">
+      {% for row in filter_rows %}
+      <div class="filter-row">
+        <span class="filter-label">{{ row.label }}</span>
+        <div class="filter-options">
+          {% for option in row.options %}
+          <a href="{{ option.url }}" {% if option.active %}aria-current="true"{% endif %}>{{ option.label }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </nav>
+    <div class="filter-foot">
+      <p class="result-count" role="status">{{ motors|length }} motor{{ '' if motors|length == 1 else 's' }}</p>
+      <a href="/motors">Reset</a>
+    </div>
+    {% if motors %}
+    <div class="motor-grid stagger">
+      {% for m in motors %}{{ motor_card(m) }}{% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+      <p>No motors match those filters.</p>
+      <a class="btn btn-sm" href="/quote" data-quote>Ask us about a motor</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

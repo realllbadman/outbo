@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Your Cart | {{ biz.business_name }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <h1>Your cart</h1>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap narrow">
+    {% if dropped %}<p class="form-alert" role="status">Motors that are no longer available were removed from your cart.</p>{% endif %}
+    {% if motors %}
+    <ul class="cart-list">
+      {% for m in motors %}
+      <li class="cart-item">
+        <div class="cart-item-info">
+          <p class="card-make">{{ m.make }}</p>
+          <a class="cart-item-name" href="/motors/{{ m.id }}">{{ m.name }}</a>
+        </div>
+        <div class="cart-item-price">{{ m.price_usd|money }}</div>
+        <form method="post" action="/cart/remove">
+          <input type="hidden" name="motor_id" value="{{ m.id }}">
+          <button class="link-button" type="submit" aria-label="Remove {{ m.name }}">Remove</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    <dl class="totals">
+      <div><dt>Subtotal</dt><dd>{{ subtotal|money }}</dd></div>
+      <div><dt>Freight</dt><dd>Quoted for your address</dd></div>
+    </dl>
+    <div class="cart-actions">
+      <a href="/motors">Keep shopping</a>
+      <a class="btn btn-wide btn-arrow" href="/checkout">Review &amp; Request Order</a>
+    </div>
+    {% else %}
+    <div class="empty">
+      <p>Your cart is empty.</p>
+      <a class="btn btn-sm" href="/motors">Browse motors</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

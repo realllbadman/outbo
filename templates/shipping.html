@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Shipping | {{ biz.business_name }}{% endblock %}
+{% block content %}
+<section class="page-head page-head-photo photo-teal">
+  <div class="wrap">
+    <p class="eyebrow eyebrow-light">Shipping</p>
+    <h1>Crated freight to all 50 states</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap narrow prose">
+    <p class="lead">We ship used outboard motors anywhere in the United States. Every motor leaves us crated and goes by freight, so it arrives upright, protected and ready to rig.</p>
+    <p>Freight isn't included in the listed price, because it depends on the motor and where it's going. Send us your ZIP code and we'll set out the freight cost in your quote before you commit to anything.</p>
+    <a class="btn" href="/quote" data-quote>Get a shipping quote</a>
+  </div>
+</section>
+
+<section class="section section-mist">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow eyebrow-rule">What you get</p>
+      <h2>Packed properly, priced up front</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature"><h3>Crated for the trip</h3><p>Each motor is strapped into a crate so the powerhead, lower unit and propeller are protected in transit.</p></div>
+      <div class="feature"><h3>Freight, door to door</h3><p>Motors travel by freight carrier, which handles heavy items far better than parcel services.</p></div>
+      <div class="feature"><h3>Cost in your quote</h3><p>You see the freight cost for your address in writing, alongside the motor price, before anything is charged.</p></div>
+      <div class="feature"><h3>All 50 states</h3><p>From Florida to Washington, Alaska and Hawaii. Tell us where the motor is going and we'll work out the route.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow eyebrow-rule">How it works</p>
+      <h2>From quote to your driveway</h2>
+    </div>
+    <ol class="steps">
+      <li><span class="step-num">01</span><h3>Send your ZIP</h3><p>Pick a motor, or tell us what you need, and include the delivery ZIP code.</p></li>
+      <li><span class="step-num">02</span><h3>Get the freight cost</h3><p>We quote freight for your address and confirm the total with you.</p></li>
+      <li><span class="step-num">03</span><h3>Motor is crated</h3><p>Once payment is confirmed, the motor is crated and booked with the carrier.</p></li>
+      <li><span class="step-num">04</span><h3>Delivery</h3><p>The carrier contacts you to arrange a delivery time. Check the crate, then sign.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section section-mist">
+  <div class="wrap narrow prose">
+    <h2>What affects the freight cost</h2>
+    <ul class="check-list">
+      <li><strong>Size and weight.</strong> A 40 HP tiller motor costs less to move than a 250 HP V6 with a 25" shaft.</li>
+      <li><strong>Distance.</strong> Neighbouring states usually cost less than coast to coast.</li>
+      <li><strong>Type of address.</strong> Business addresses with a loading dock are often cheaper than homes.</li>
+      <li><strong>Liftgate.</strong> If there's no dock or forklift where you are, the truck needs a liftgate to lower the crate.</li>
+    </ul>
+
+    <h2>Delivery options</h2>
+    <ul class="check-list">
+      <li><strong>To your home</strong> with liftgate service, so the crate is lowered to the ground.</li>
+      <li><strong>To a business</strong> such as a marina, boat yard or workshop with a dock or forklift.</li>
+      <li><strong>Terminal pickup.</strong> Collect the crate from the carrier's nearest depot. This is often the cheapest option.</li>
+      <li><strong>Local pickup</strong> in {{ biz.business_location }}, by arrangement.</li>
+    </ul>
+
+    <h2>When your motor arrives</h2>
+    <ol class="check-list check-list-numbered">
+      <li>Look over the crate before the driver leaves.</li>
+      <li>If anything looks damaged, write it on the delivery receipt before you sign, and take photos.</li>
+      <li>Unpack the motor and check it over.</li>
+      <li>Contact us straight away by <a href="{{ biz.whatsapp_url }}" rel="noopener">WhatsApp</a>, <a href="{{ biz.phone_url }}">phone</a> or <a href="mailto:{{ biz.business_email }}">email</a> if anything isn't right.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap narrow">
+    <div class="section-head">
+      <p class="eyebrow eyebrow-rule">Questions</p>
+      <h2>Shipping FAQ</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>How long does delivery take?</summary>
+        <p>It depends on the distance and the carrier's schedule. We give you an estimate with your freight quote, and the carrier calls ahead to set a delivery time.</p>
+      </details>
+      <details>
+        <summary>Do you ship outside the United States?</summary>
+        <p>Our standard service covers all 50 states. If you're elsewhere, send us a message with your location and we'll tell you what's possible.</p>
+      </details>
+      <details>
+        <summary>Can I pick the motor up myself?</summary>
+        <p>Yes. Local pickup in {{ biz.business_location }} can be arranged. Let us know when you enquire.</p>
+      </details>
+      <details>
+        <summary>Can I ship more than one motor together?</summary>
+        <p>Yes. Add them all to your cart or list them in your enquiry, and we'll quote freight for the whole shipment.</p>
+      </details>
+      <details>
+        <summary>Is the shipment insured?</summary>
+        <p>Ask us about freight insurance when you get your quote, and we'll include the options for your shipment.</p>
+      </details>
+      <details>
+        <summary>Do I need to be home for delivery?</summary>
+        <p>Someone needs to be there to check the crate and sign for it. The carrier contacts you beforehand to agree on a time.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="photo-band photo-sea">
+  <div class="wrap band-inner">
+    <h2>Need a freight price?</h2>
+    <p>Send the motor you're interested in and your ZIP code, and we'll reply with the freight cost to your door.</p>
+    <div class="band-action"><a class="btn btn-light btn-wide btn-arrow" href="/quote" data-quote>Get a shipping quote</a></div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% from "_macros.html" import quote_form %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ biz.business_name }}{% endblock %}</title>
+  <meta name="description" content="Used outboard motors from {{ biz.business_name }} in {{ biz.business_location }}. Crated freight to all 50 states.">
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-nav>
+    <div class="util-bar">
+      <div class="wrap util-inner">
+        <a href="{{ biz.whatsapp_url }}" rel="noopener">WhatsApp</a>
+        <a href="{{ biz.phone_url }}">Call {{ biz.phone_display }}</a>
+        <a class="util-hide" href="/contact">Contact Us</a>
+        <span class="util-location">{{ biz.business_location }}</span>
+      </div>
+    </div>
+    <div class="nav-bar">
+      <div class="wrap nav-inner">
+        <a class="logo-block" href="/" aria-label="{{ biz.business_name }} home">
+          <img class="logo-mark" src="/static/img/logo.png" alt="{{ biz.business_name }} logo">
+          <span class="logo-name">{{ biz.business_name }}</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu" data-nav-toggle>
+          <span></span><span></span><span></span>
+        </button>
+        <nav id="nav-links" class="nav-links" aria-label="Main">
+          <a href="/motors">Motors</a>
+          <a href="/shipping">Shipping</a>
+          <a href="/financing">Financing</a>
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
+          {% set cart_count = cart_ids(request)|length %}
+          <a class="nav-cart" href="/cart">Cart{% if cart_count %} <span class="cart-count">{{ cart_count }}</span>{% endif %}</a>
+          <a class="nav-quote" href="/quote" data-quote>Get a Quote</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">{% block content %}{% endblock %}</main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <p class="footer-name">{{ biz.business_name }}</p>
+        <p>Used outboard motors. Crated freight to all 50 states.</p>
+        <p>{{ biz.business_location }}</p>
+      </div>
+      <div>
+        <h2>Browse</h2>
+        <a href="/motors">All motors</a>
+        <a href="/shipping">Shipping</a>
+        <a href="/financing">Financing</a>
+        <a href="/about">About</a>
+      </div>
+      <div>
+        <h2>Talk to us</h2>
+        <a href="{{ biz.whatsapp_url }}" rel="noopener">WhatsApp {{ biz.whatsapp_display }}</a>
+        <a href="{{ biz.phone_url }}">Call / SMS {{ biz.phone_display }}</a>
+        <a href="mailto:{{ biz.business_email }}">{{ biz.business_email }}</a>
+      </div>
+    </div>
+    <p class="wrap footer-legal">© {{ current_year() }} {{ biz.business_name }}</p>
+  </footer>
+
+  <dialog class="quote-modal" data-quote-modal aria-labelledby="quote-modal-title">
+    <div class="quote-modal-inner">
+      <button class="modal-close" type="button" aria-label="Close" data-modal-close>×</button>
+      <h2 id="quote-modal-title">Request a quote</h2>
+      {{ quote_form({}, {}, 'modal') }}
+    </div>
+  </dialog>
+
+  <script src="{{ asset('js/site.js') }}"></script>
+
+  <!-- Smartsupp Live Chat script -->
+  <script type="text/javascript">
+  var _smartsupp = _smartsupp || {};
+  _smartsupp.key = '3b18028fb863ca7ffdf607022a6a9c356388c23d';
+  window.smartsupp||(function(d) {
+    var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+    s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+    c.type='text/javascript';c.charset='utf-8';c.async=true;
+    c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+  })(document);
+  </script>
+  <noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}About | {{ biz.business_name }}{% endblock %}
+{% block content %}
+<section class="page-head page-head-photo photo-harbor">
+  <div class="wrap">
+    <p class="eyebrow eyebrow-light">About</p>
+    <h1>{{ biz.business_name }}</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap narrow prose">
+    <p class="lead">{{ biz.business_name }} sells used outboard motors from {{ biz.business_location }}, with crated freight to all 50 states.</p>
+    <p>We deal in the motors people actually run: dependable two-strokes and four-strokes for fishing boats, bay boats, pontoons, skiffs and center consoles. Whether you're repowering an old hull or replacing a motor that's given up, we try to make buying a used outboard straightforward, from the first question to the day the crate arrives.</p>
+    <p>You can browse the stock online, add a motor to your cart and send an order request. We receive it by email, follow up to confirm the details, freight and payment with you, and then get the motor crated and on its way.</p>
+  </div>
+</section>
+
+{% if motor_count %}
+<section class="section section-mist">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow eyebrow-rule">In stock</p>
+      <h2>What we carry</h2>
+    </div>
+    <dl class="about-stats">
+      <div><dt>Motors in stock</dt><dd>{{ motor_count }}</dd></div>
+      {% if hp_low is not none %}<div><dt>Horsepower</dt><dd>{{ hp_low }}–{{ hp_high }}</dd></div>{% endif %}
+      <div><dt>Brands</dt><dd>{{ brands|length }}</dd></div>
+    </dl>
+    <ul class="brand-list">
+      {% for brand, count in brands %}
+      <li><a href="/motors?brand={{ brand|urlencode }}"><strong>{{ brand }}</strong><span>{{ count }} motor{{ 's' if count != 1 }}</span></a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow eyebrow-rule">How we work</p>
+      <h2>Plain dealing, start to finish</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature"><h3>Clear listings</h3><p>Every motor shows its make, model, year, horsepower, stroke, cylinders, shaft length and hours, with photos and a price.</p></div>
+      <div class="feature"><h3>Real people</h3><p>Message us on WhatsApp, call, text or email about any motor. You talk to the people selling it.</p></div>
+      <div class="feature"><h3>No surprises on freight</h3><p>Freight to your ZIP code is quoted in writing before you pay, so you know the full cost up front.</p></div>
+      <div class="feature"><h3>Ways to pay</h3><p>Choose the payment method that suits you at checkout. Financing can be arranged too.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-mist">
+  <div class="wrap narrow prose">
+    <h2>Choosing the right motor</h2>
+    <p>Not sure what you need? These are the questions we ask buyers first. Send us the answers and we'll suggest motors from our stock.</p>
+    <ul class="check-list">
+      <li><strong>Your boat.</strong> Its length, hull type and the maximum horsepower on its capacity plate.</li>
+      <li><strong>Shaft length.</strong> Measure from the top of the transom to the bottom of the hull: about 15" is a short shaft, 20" long and 25" extra-long.</li>
+      <li><strong>Two-stroke or four-stroke.</strong> Two-strokes are lighter and simpler; four-strokes are quieter and use less fuel, with no oil to mix.</li>
+      <li><strong>Controls.</strong> Whether you steer with a tiller or have remote steering and throttle at a console.</li>
+      <li><strong>How you'll use it.</strong> Fishing, cruising, towing or offshore running all point to different power ranges.</li>
+    </ul>
+    <a class="btn" href="/quote" data-quote>Ask us to recommend a motor</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow eyebrow-rule">Get in touch</p>
+      <h2>Talk to us</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature"><h3>WhatsApp</h3><p><a href="{{ biz.whatsapp_url }}" rel="noopener">{{ biz.whatsapp_display }}</a></p></div>
+      <div class="feature"><h3>Call or text</h3><p><a href="{{ biz.phone_url }}">{{ biz.phone_display }}</a></p></div>
+      <div class="feature"><h3>Email</h3><p><a href="mailto:{{ biz.business_email }}">{{ biz.business_email }}</a></p></div>
+      <div class="feature"><h3>Location</h3><p>{{ biz.business_location }}<br>Shipping nationwide</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="photo-band photo-teal">
+  <div class="wrap band-inner">
+    <h2>Looking for a specific motor?</h2>
+    <p>Tell us what you're running and what you need, and we'll get back to you.</p>
+    <div class="band-action"><a class="btn btn-light btn-wide btn-arrow" href="/motors">Browse all motors</a></div>
+  </div>
+</section>
+{% endblock %}

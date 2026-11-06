@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Contact | {{ biz.business_name }}{% endblock %}
+{% block content %}
+<section class="page-head page-head-photo photo-golden">
+  <div class="wrap">
+    <p class="eyebrow eyebrow-light">Contact</p>
+    <h1>Talk to us</h1>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="feature-grid stagger">
+      <div class="feature"><h2>WhatsApp</h2><p><a href="{{ biz.whatsapp_url }}" rel="noopener">{{ biz.whatsapp_display }}</a></p></div>
+      <div class="feature"><h2>Call / SMS</h2><p><a href="{{ biz.phone_url }}">{{ biz.phone_display }}</a></p></div>
+      <div class="feature"><h2>Email</h2><p><a href="mailto:{{ biz.business_email }}">{{ biz.business_email }}</a></p></div>
+      <div class="feature"><h2>Location</h2><p>{{ biz.business_location }}</p></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

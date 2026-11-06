@@ -1,0 +1,107 @@
+{% extends "admin/base.html" %}
+{% block title %}Motors{% endblock %}
+{% block content %}
+<div class="admin-head">
+  <div>
+    <h1>Motors</h1>
+    <p class="admin-sub">{{ counts.in_stock }} in stock · {{ counts.sold }} sold</p>
+  </div>
+  <a class="btn btn-sm" href="/admin/motors/new">+ Add motor</a>
+</div>
+
+{% if saved_motor %}
+<div class="photo-banner" role="status">
+  Saved <a href="#motor-{{ saved_motor.id }}"><strong>#{{ saved_motor.id }}</strong> · {{ saved_motor.name }}</a>{% if saved_motor.status == 'sold' %} (marked sold){% endif %}
+</div>
+{% endif %}
+
+<div class="admin-toolbar">
+  <nav class="admin-tabs" aria-label="Filter motors">
+    <a href="/admin/motors"{% if not current %} aria-current="page"{% endif %}>All <span>{{ total }}</span></a>
+    <a href="/admin/motors?status=in_stock"{% if current == 'in_stock' %} aria-current="page"{% endif %}>In stock <span>{{ counts.in_stock }}</span></a>
+    <a href="/admin/motors?status=sold"{% if current == 'sold' %} aria-current="page"{% endif %}>Sold <span>{{ counts.sold }}</span></a>
+  </nav>
+  <label class="photo-search">
+    <span class="visually-hidden">Find a motor</span>
+    <input type="search" placeholder="Find a motor: name or #number" data-admin-search>
+  </label>
+</div>
+
+<div class="admin-card table-scroll">
+  <table class="admin-table admin-motors">
+    <thead>
+      <tr><th><span class="visually-hidden">Photo</span></th><th>#</th><th>Motor</th><th>Price</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for m in motors %}
+      {% set pics = photos[m.id] %}
+      <tr id="motor-{{ m.id }}" class="{% if saved_motor and saved_motor.id == m.id %}is-saved{% endif %}" data-search="#{{ m.id }} {{ m.name|lower }} {{ m.make|lower }} {{ m.model|lower if m.model }}">
+        <td class="admin-thumb">
+          {% if pics %}<img src="{{ pics[0] }}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'admin-thumb-empty', textContent: 'Broken'}))">
+          {% else %}<span class="admin-thumb-empty">No photo</span>{% endif %}
+        </td>
+        <td class="num">{{ m.id }}</td>
+        <td>
+          <a href="/admin/motors/{{ m.id }}/edit"><strong>{{ m.name }}</strong></a>
+          <br><span class="muted">{{ m.hp }} HP · {{ m.stroke }}-stroke{% if m.hours is not none %} · {{ m.hours|number }} hrs{% endif %}{% if m.shaft %} · {{ m.shaft }} shaft{% endif %}</span>
+        </td>
+        <td class="nowrap">{{ m.price_usd|money }}</td>
+        <td><span class="status status-{{ m.status }}">{{ 'In stock' if m.status == 'in_stock' else 'Sold' }}</span></td>
+        <td>
+          <div class="actions">
+            <a href="/admin/motors/{{ m.id }}/edit">Edit</a>
+            <a href="/admin/photos#motor-{{ m.id }}">Photo</a>
+            <a href="/motors/{{ m.id }}" target="_blank" rel="noopener">View</a>
+            {% if m.status != 'sold' %}
+            <form method="post" action="/admin/motors/{{ m.id }}/sold" data-confirm="Mark #{{ m.id }} {{ m.name }} as sold? It will be taken off the website.">
+              <button class="link-button" type="submit">Mark sold</button>
+            </form>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="admin-empty muted" hidden data-admin-none>No motors match.</p>
+</div>
+
+<script>
+(function () {
+  document.querySelectorAll('form[data-confirm]').forEach(function (form) {
+    form.addEventListener('submit', function (event) { if (!confirm(form.dataset.confirm)) event.preventDefault(); });
+  });
+
+  function distance(a, b) {
+    var prev = [], cur, i, j;
+    for (j = 0; j <= b.length; j++) prev[j] = j;
+    for (i = 1; i <= a.length; i++) {
+      cur = [i];
+      for (j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+  function matches(text, term) {
+    if (!term || text.indexOf(term) !== -1) return true;
+    var words = text.split(/\s+/);
+    return term.split(/\s+/).every(function (token) {
+      if (text.indexOf(token) !== -1) return true;
+      var allowed = token.length >= 7 ? 2 : token.length >= 4 ? 1 : 0;
+      return allowed > 0 && words.some(function (w) { return Math.min(distance(w, token), distance(w.slice(0, token.length), token)) <= allowed; });
+    });
+  }
+
+  var search = document.querySelector('[data-admin-search]');
+  var rows = document.querySelectorAll('.admin-motors tbody tr');
+  search.addEventListener('input', function () {
+    var term = search.value.trim().toLowerCase(), shown = 0;
+    rows.forEach(function (row) { row.hidden = !matches(row.dataset.search, term); if (!row.hidden) shown++; });
+    document.querySelector('[data-admin-none]').hidden = shown > 0;
+  });
+
+  var saved = document.querySelector('.admin-motors tr.is-saved');
+  if (saved) saved.scrollIntoView({ block: 'center' });
+})();
+</script>
+{% endblock %}

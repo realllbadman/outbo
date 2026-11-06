@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>{% block title %}Admin{% endblock %} | {{ biz.business_name }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+</head>
+<body class="admin">
+  {% set path = request.url.path %}
+  {% block header %}
+  <header class="admin-nav">
+    <div class="wrap admin-nav-inner">
+      <a class="admin-brand" href="/admin">
+        <img src="{{ asset('img/logo.png') }}" alt="" width="36" height="36">
+        <span>{{ biz.business_name }}<small>Admin</small></span>
+      </a>
+      <nav class="admin-links" aria-label="Admin">
+        <a href="/admin"{% if path == '/admin' or path.startswith('/admin/enquiry') %} aria-current="page"{% endif %}>Enquiries</a>
+        <a href="/admin/motors"{% if path.startswith('/admin/motors') %} aria-current="page"{% endif %}>Motors</a>
+        <a href="/admin/photos"{% if path.startswith('/admin/photos') %} aria-current="page"{% endif %}>Photos</a>
+      </nav>
+      <div class="admin-account">
+        <a href="/" target="_blank" rel="noopener">View site</a>
+        <form method="post" action="/admin/logout"><button type="submit" class="admin-logout">Log out</button></form>
+      </div>
+    </div>
+  </header>
+  {% endblock %}
+  <main class="wrap admin-main">{% block content %}{% endblock %}</main>
+</body>
+</html>

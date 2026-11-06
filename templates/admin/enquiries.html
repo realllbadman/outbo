@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+{% block title %}Enquiries{% endblock %}
+{% block content %}
+<div class="admin-head">
+  <div>
+    <h1>Enquiries</h1>
+    <p class="admin-sub">Quote requests and orders from the website, newest first.</p>
+  </div>
+</div>
+
+<nav class="admin-tabs" aria-label="Filter enquiries">
+  <a href="/admin"{% if not current %} aria-current="page"{% endif %}>All <span>{{ total }}</span></a>
+  {% for s in statuses %}
+  <a href="/admin?status={{ s }}"{% if current == s %} aria-current="page"{% endif %}>{{ s|capitalize }} <span>{{ counts.get(s, 0) }}</span></a>
+  {% endfor %}
+</nav>
+
+{% if enquiries %}
+<div class="admin-card table-scroll">
+  <table class="admin-table admin-enquiries">
+    <thead>
+      <tr><th>#</th><th>Received</th><th>Customer</th><th>Motor</th><th>Status</th><th><span class="visually-hidden">Open</span></th></tr>
+    </thead>
+    <tbody>
+      {% for e in enquiries %}
+      <tr class="{% if e.status == 'new' %}is-new{% endif %}">
+        <td class="num">{{ e.id }}</td>
+        <td class="nowrap">{{ e.created_at.strftime('%d %b %Y') }}<br><span class="muted">{{ e.created_at.strftime('%H:%M') }} UTC</span></td>
+        <td><a href="/admin/enquiry/{{ e.id }}"><strong>{{ e.name }}</strong></a><br><span class="muted">{{ e.email }} · {{ e.phone }}</span></td>
+        <td>{{ e.motor_of_interest|dash }}</td>
+        <td><span class="status status-{{ e.status }}">{{ e.status|capitalize }}</span></td>
+        <td class="actions"><a href="/admin/enquiry/{{ e.id }}">Open</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="admin-card admin-empty">
+  <p>{% if current %}No {{ current }} enquiries.{% else %}No enquiries yet.{% endif %}</p>
+  <p class="muted">When someone sends a quote request or order from the website, it shows up here and you get an email.</p>
+</div>
+{% endif %}
+{% endblock %}

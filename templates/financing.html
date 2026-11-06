@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Financing | {{ biz.business_name }}{% endblock %}
+{% block content %}
+<section class="page-head page-head-photo photo-sea">
+  <div class="wrap">
+    <p class="eyebrow eyebrow-light">Financing</p>
+    <h1>Financing is available</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap narrow prose">
+    <p class="lead">A good used outboard shouldn't have to wait until you can pay for it all at once. Financing is available, and we arrange it individually around the motor you choose.</p>
+    <p>Financing isn't set up through this website. Mention it in your enquiry or order request and we'll talk through the options with you directly: what's possible for that motor, what we'd need from you, and how the payments would work. Asking costs nothing and doesn't commit you to anything.</p>
+    <a class="btn" href="/quote" data-quote>Ask about financing</a>
+  </div>
+</section>
+
+<section class="section section-mist">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow eyebrow-rule">How it works</p>
+      <h2>Four steps to your motor</h2>
+    </div>
+    <ol class="steps">
+      <li><span class="step-num">01</span><h3>Choose a motor</h3><p>Find the motor you want in our stock, or tell us what you're looking for.</p></li>
+      <li><span class="step-num">02</span><h3>Ask about financing</h3><p>Send an enquiry or order request and say you'd like to finance it.</p></li>
+      <li><span class="step-num">03</span><h3>Agree the terms</h3><p>We go through the options with you and agree a plan that works for both sides, in writing.</p></li>
+      <li><span class="step-num">04</span><h3>Crated and shipped</h3><p>Once the plan is agreed, the motor is crated and sent by freight as arranged.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap narrow prose">
+    <h2>What to have ready</h2>
+    <p>It speeds things up if you include these when you get in touch:</p>
+    <ul class="check-list">
+      <li><strong>The motor</strong> you're interested in, or the horsepower and shaft length you need.</li>
+      <li><strong>Your budget</strong>, including how much you'd like to pay up front.</li>
+      <li><strong>Your delivery ZIP code</strong>, so freight can be included in the total.</li>
+      <li><strong>How you'd prefer to pay</strong> the up-front part and any later payments.</li>
+      <li><strong>The best way to reach you</strong>: phone, text, WhatsApp or email.</li>
+    </ul>
+
+    <h2>Budget for the whole job</h2>
+    <p>When you work out what you can afford, it helps to include more than the motor itself:</p>
+    <ul class="check-list">
+      <li><strong>Freight</strong> to your address, which we quote for your ZIP code.</li>
+      <li><strong>Rigging</strong>: controls, cables, gauges and fuel lines if your boat doesn't already have the right ones.</li>
+      <li><strong>Propeller</strong> sized for your boat and the way you use it.</li>
+      <li><strong>Installation</strong> by a local marine mechanic, if you're not fitting it yourself.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-mist">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow eyebrow-rule">Paying outright</p>
+      <h2>Payment methods we accept</h2>
+    </div>
+    <ul class="pay-list">
+      {% for value, label, detail in payment_methods %}
+      <li><strong>{{ label }}</strong><span>{{ detail }}</span></li>
+      {% endfor %}
+    </ul>
+    <p class="form-note">You choose your payment method at checkout. We send the payment details once we've confirmed your order. Nothing is charged online.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap narrow">
+    <div class="section-head">
+      <p class="eyebrow eyebrow-rule">Questions</p>
+      <h2>Financing FAQ</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Does asking about financing commit me to anything?</summary>
+        <p>No. You can ask about any motor and decide afterwards. Nothing is agreed until we've both confirmed the terms.</p>
+      </details>
+      <details>
+        <summary>Can I put down a deposit to hold a motor?</summary>
+        <p>Ask us about the motor you want. We'll tell you whether we can hold it and on what terms.</p>
+      </details>
+      <details>
+        <summary>Can I finance more than one motor, such as a twin set?</summary>
+        <p>Yes, you can ask about financing for several motors in the same enquiry.</p>
+      </details>
+      <details>
+        <summary>Can freight be included?</summary>
+        <p>Freight is quoted for your ZIP code and can be included in the total we agree with you.</p>
+      </details>
+      <details>
+        <summary>How quickly can it be arranged?</summary>
+        <p>The sooner we have the details listed above, the sooner we can confirm the options. We reply by your preferred contact method.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="photo-band photo-teal">
+  <div class="wrap band-inner">
+    <h2>Talk to us about financing</h2>
+    <p>Tell us which motor you're interested in and we'll go through the options with you.</p>
+    <div class="band-action"><a class="btn btn-light btn-wide btn-arrow" href="/quote" data-quote>Ask about financing</a></div>
+  </div>
+</section>
+{% endblock %}

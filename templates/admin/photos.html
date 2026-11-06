@@ -1,0 +1,211 @@
+{% extends "admin/base.html" %}
+{% block title %}Photos{% endblock %}
+{% block content %}
+<div class="admin-head">
+  <h1>Photos</h1>
+  <a class="btn btn-sm" href="/motors" target="_blank" rel="noopener">View motors page</a>
+</div>
+
+{% if saved_motor %}
+<div class="photo-banner photo-banner-{{ did }}" role="status">
+  {% if did == 'removed' %}Photo removed from{% else %}New photo saved for{% endif %}
+  <a href="#motor-{{ saved_motor.id }}"><strong>#{{ saved_motor.id }}</strong> · {{ saved_motor.name }}</a>
+</div>
+{% endif %}
+{% if error_id %}
+<div class="photo-banner photo-banner-error" role="alert">
+  That link wasn't saved for <a href="#motor-{{ error_id }}"><strong>#{{ error_id }}</strong></a>. Enter a full web address starting with https://
+</div>
+{% endif %}
+
+<p class="photo-intro">
+  To change a photo: on Google Images or any site, right-click the photo, choose <em>Copy image address</em>,
+  paste it into that motor's box and press <strong>Save</strong>. The preview changes as soon as you paste, so you can check it first.
+</p>
+
+<div class="photo-toolbar">
+  <label class="photo-search">
+    <span class="visually-hidden">Find a motor</span>
+    <input type="search" placeholder="Find a motor: name or #number" data-photo-search>
+  </label>
+  <div class="photo-filters" role="group" aria-label="Show">
+    <button type="button" class="photo-filter" data-filter="all" aria-pressed="true">All <span>{{ motors|length }}</span></button>
+    <button type="button" class="photo-filter" data-filter="problem" aria-pressed="false">Needs attention <span data-problem-count>{{ missing + shared|length }}</span></button>
+  </div>
+</div>
+<nav class="photo-brands" aria-label="Jump to brand">
+  {% for brand, items in groups %}<a href="#brand-{{ loop.index }}">{{ brand }} <span>{{ items|length }}</span></a>{% endfor %}
+</nav>
+<p class="photo-none" hidden data-photo-none>No motors match. Try a brand (like Yamaha), a model (like F115) or a number (like #42).</p>
+
+{% for brand, items in groups %}
+<section class="photo-group" id="brand-{{ loop.index }}" data-photo-group>
+  <h2>{{ brand }} <span>{{ items|length }} motor{{ 's' if items|length != 1 }}</span></h2>
+  <ol class="photo-list">
+    {% for m in items %}
+    {% set is_error = error_id == m.id %}
+    {% set value = error_value if is_error else (m.image_url or '') %}
+    {% set problem = (not m.image_url) or (m.id in shared) %}
+    {% set label = '#' ~ m.id ~ ' ' ~ m.name %}
+    <li class="photo-row{% if saved_motor and saved_motor.id == m.id %} is-saved{% endif %}{% if is_error %} is-error{% endif %}"
+        id="motor-{{ m.id }}" data-problem="{{ 'yes' if problem else 'no' }}" data-search="#{{ m.id }} {{ m.name|lower }} {{ m.make|lower }} {{ m.model|lower if m.model }}">
+      <div class="photo-thumb">
+        <span class="photo-empty"{% if value %} hidden{% endif %}>No photo</span>
+        <span class="photo-broken" hidden>Link doesn't load</span>
+        <img src="{{ value }}" alt="Photo for {{ label }}" loading="lazy" referrerpolicy="no-referrer" data-preview{% if not value %} hidden{% endif %}>
+        <span class="photo-unsaved" hidden>Not saved yet</span>
+      </div>
+
+      <div class="photo-info">
+        <p class="photo-num">#{{ m.id }}</p>
+        <h3><a href="/motors/{{ m.id }}" target="_blank" rel="noopener">{{ m.name }}</a></h3>
+        <p class="photo-meta">
+          {% if m.year %}{{ m.year }} · {% endif %}{{ m.hp }} HP · {{ m.stroke }}-stroke{% if m.model %} · {{ m.model }}{% endif %} · {{ m.price_usd|money }}{% if m.status == 'sold' %} · Sold{% endif %}
+        </p>
+        {% if m.id in shared %}
+        <p class="photo-state photo-state-warn">Same photo as #{{ shared[m.id]|join(', #') }}</p>
+        {% elif not m.image_url %}
+        <p class="photo-state photo-state-warn">No photo yet</p>
+        {% else %}
+        <p class="photo-state photo-state-ok" data-state-ok>Has its own photo</p>
+        {% endif %}
+      </div>
+
+      <form method="post" action="/admin/photos/{{ m.id }}" class="photo-form" data-label="{{ label }}" data-saved-url="{{ m.image_url or '' }}">
+        <label for="url-{{ m.id }}">Image link for #{{ m.id }}</label>
+        <input id="url-{{ m.id }}" name="image_url" type="url" inputmode="url" placeholder="https://…/photo.jpg" value="{{ value }}" data-url-input{% if is_error %} aria-invalid="true" aria-describedby="err-{{ m.id }}"{% endif %}>
+        {% if is_error %}<p class="field-error" id="err-{{ m.id }}">Enter a full web address starting with https://</p>{% endif %}
+        <div class="photo-actions">
+          <button class="btn btn-sm" type="submit" name="action" value="save">Save #{{ m.id }}</button>
+          <button class="link-button" type="button" data-undo hidden>Undo</button>
+          {% if m.image_url %}<button class="link-button photo-remove" type="submit" name="action" value="remove" formnovalidate data-remove>Remove photo</button>{% endif %}
+        </div>
+      </form>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endfor %}
+
+<script>
+(function () {
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.photo-row'));
+
+  function showState(row, state) {
+    row.querySelector('.photo-empty').hidden = state !== 'empty';
+    row.querySelector('.photo-broken').hidden = state !== 'broken';
+    row.querySelector('[data-preview]').hidden = state !== 'ok';
+    row.classList.toggle('is-broken', state === 'broken');
+  }
+
+  rows.forEach(function (row) {
+    var img = row.querySelector('[data-preview]');
+    var input = row.querySelector('[data-url-input]');
+    var form = row.querySelector('form');
+    var undo = row.querySelector('[data-undo]');
+    var unsaved = row.querySelector('.photo-unsaved');
+    var savedUrl = form.dataset.savedUrl;
+
+    img.addEventListener('load', function () { if (img.getAttribute('src')) showState(row, 'ok'); });
+    img.addEventListener('error', function () {
+      if (!img.getAttribute('src')) return;
+      showState(row, 'broken');
+      if (input.value.trim() === savedUrl) {
+        row.dataset.problem = 'yes';
+        var ok = row.querySelector('[data-state-ok]');
+        if (ok) { ok.textContent = "Photo link doesn't load"; ok.className = 'photo-state photo-state-warn'; }
+      }
+    });
+    if (img.complete && img.getAttribute('src') && img.naturalWidth === 0) img.dispatchEvent(new Event('error'));
+
+    function markChanged() {
+      var changed = input.value.trim() !== savedUrl;
+      row.classList.toggle('is-changed', changed);
+      unsaved.hidden = !changed;
+      undo.hidden = !changed;
+    }
+
+    var timer;
+    input.addEventListener('input', function () {
+      markChanged();
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        var url = input.value.trim();
+        if (!url) { img.removeAttribute('src'); showState(row, 'empty'); return; }
+        img.src = url;
+      }, 300);
+    });
+
+    undo.addEventListener('click', function () {
+      input.value = savedUrl;
+      input.dispatchEvent(new Event('input'));
+      input.focus();
+    });
+
+    var remove = row.querySelector('[data-remove]');
+    if (remove) remove.addEventListener('click', function (event) {
+      if (!confirm('Remove the photo from ' + form.dataset.label + '?')) event.preventDefault();
+    });
+  });
+
+  var search = document.querySelector('[data-photo-search]');
+  var filters = document.querySelectorAll('.photo-filter');
+  var onlyProblems = false;
+
+  // Typo-tolerant search: "envirude" still finds Evinrude.
+  function distance(a, b) {
+    var prev = [], cur, i, j;
+    for (j = 0; j <= b.length; j++) prev[j] = j;
+    for (i = 1; i <= a.length; i++) {
+      cur = [i];
+      for (j = 1; j <= b.length; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+
+  function wordMatches(words, text, token) {
+    if (text.indexOf(token) !== -1) return true;
+    var allowed = token.length >= 7 ? 2 : token.length >= 4 ? 1 : 0;
+    if (!allowed) return false;
+    return words.some(function (word) {
+      return Math.min(distance(word, token), distance(word.slice(0, token.length), token)) <= allowed;
+    });
+  }
+
+  function matches(text, term) {
+    if (!term || text.indexOf(term) !== -1) return true;
+    var words = text.split(/\s+/);
+    return term.split(/\s+/).every(function (token) { return wordMatches(words, text, token); });
+  }
+
+  function applyFilters() {
+    var term = search.value.trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function (row) {
+      var visible = (!onlyProblems || row.dataset.problem === 'yes') && matches(row.dataset.search, term);
+      row.hidden = !visible;
+      if (visible) shown++;
+    });
+    document.querySelectorAll('[data-photo-group]').forEach(function (group) {
+      group.hidden = !group.querySelector('.photo-row:not([hidden])');
+    });
+    document.querySelector('[data-photo-none]').hidden = shown > 0;
+  }
+
+  search.addEventListener('input', applyFilters);
+  filters.forEach(function (button) {
+    button.addEventListener('click', function () {
+      filters.forEach(function (b) { b.setAttribute('aria-pressed', String(b === button)); });
+      onlyProblems = button.dataset.filter === 'problem';
+      applyFilters();
+    });
+  });
+
+  var target = document.querySelector('.photo-row.is-error, .photo-row.is-saved');
+  if (target) target.scrollIntoView({ block: 'center' });
+})();
+</script>
+{% endblock %}

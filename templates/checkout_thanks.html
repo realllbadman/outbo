@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Order Request Received | {{ biz.business_name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="wrap narrow confirm">
+    <p class="eyebrow">Order request received</p>
+    <h1>Thanks, we have your order request.</h1>
+    <p>We will review the details and get back to you by email or phone to confirm freight, payment and next steps.</p>
+    <p>Need us sooner? <a href="{{ biz.whatsapp_url }}" rel="noopener">WhatsApp {{ biz.whatsapp_display }}</a> or <a href="{{ biz.phone_url }}">call {{ biz.phone_display }}</a>.</p>
+    <a class="btn" href="/motors">Back to motors</a>
+  </div>
+</section>
+{% endblock %}

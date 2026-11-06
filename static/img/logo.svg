@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" role="img" aria-labelledby="title desc">
+  <title id="title">Terry Marine Outboards logo</title>
+  <desc id="desc">A marine outboard badge with anchors, waves, and stylized text.</desc>
+  <defs>
+    <linearGradient id="sun" x1="0" x2="1">
+      <stop offset="0%" stop-color="#ffb54d"/>
+      <stop offset="100%" stop-color="#f06f28"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" x2="1">
+      <stop offset="0%" stop-color="#f4f7fb"/>
+      <stop offset="50%" stop-color="#d7dde7"/>
+      <stop offset="100%" stop-color="#9da8b7"/>
+    </linearGradient>
+    <linearGradient id="navy" x1="0" x2="1">
+      <stop offset="0%" stop-color="#0d1a2d"/>
+      <stop offset="100%" stop-color="#172a49"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0" x2="1">
+      <stop offset="0%" stop-color="#e9f7ff"/>
+      <stop offset="100%" stop-color="#7ec9f4"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#091729" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="260" height="260" fill="#eef0f3"/>
+  <g filter="url(#shadow)">
+    <path d="M20 130c0-42 34-76 76-76h68c42 0 76 34 76 76v18c0 49-40 89-89 89H109c-49 0-89-40-89-89v-18z" fill="url(#navy)" stroke="#0c1728" stroke-width="12"/>
+    <path d="M25 128c0-42 28-72 68-72h74c40 0 68 30 68 72v20c0 42-34 76-76 76H101c-42 0-76-34-76-76v-20z" fill="none" stroke="#dfe7f4" stroke-width="6" opacity="0.9"/>
+    <path d="M46 126c0-53 18-92 58-92 46 0 65 33 65 92 0 44-22 88-65 88-43 0-58-44-58-88z" fill="url(#sun)" opacity="0.9"/>
+    <g fill="none" stroke="#dfe7f4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+      <path d="M105 35c-12 8-18 20-17 34"/>
+      <path d="M155 35c12 8 18 20 17 34"/>
+    </g>
+
+    <g>
+      <path d="M180 54c-7-3-16-4-24-1-11 4-19 12-22 23l-6 22c-2 8-5 15-10 20 6-1 13-1 19 1 13 6 24 17 28 31 4-22 19-38 42-45l18-7c-9-7-20-12-31-15-4-1-7-2-14-9z" fill="#dfe7f4" opacity="0.9"/>
+      <path d="M72 54c7-3 16-4 24-1 11 4 19 12 22 23l6 22c2 8 5 15 10 20-6-1-13-1-19 1-13 6-24 17-28 31-4-22-19-38-42-45L23 88c9-7 20-12 31-15 4-1 7-2 14-9z" fill="#dfe7f4" opacity="0.9"/>
+    </g>
+
+    <g fill="none" stroke="#0c1728" stroke-width="7" stroke-linecap="round">
+      <path d="M31 146c9 7 19 10 29 11"/>
+      <path d="M228 146c-9 7-19 10-29 11"/>
+    </g>
+
+    <g transform="translate(40 44)">
+      <path d="M38 110c-14-27-15-58 1-78 6-8 14-14 25-19l10 10c-6 4-12 9-16 15-9 13-10 24-8 40 4 14 5 29 1 44l-13 7z" fill="url(#steel)"/>
+      <path d="M70 110c14-27 15-58-1-78-6-8-14-14-25-19l-10 10c6 4 12 9 16 15 9 13 10 24 8 40-4 14-5 29-1 44l13 7z" fill="url(#steel)"/>
+      <path d="M55 26c-18 0-35 8-46 22l-7 7c1-1 3-3 4-5l2-2c7-11 18-18 29-19 32-5 58 12 76 35l-9 14c-26-18-38-28-49-52z" fill="url(#steel)" opacity="0.98"/>
+      <path d="M58 18h18v78H58z" fill="#1c2d43"/>
+      <path d="M51 105h32v12H51z" fill="#cfd8e5"/>
+      <path d="M26 94c-2 0-4 2-4 4v20c0 2 2 4 4 4h8c2 0 4-2 4-4V98c0-2-2-4-4-4h-8zm56 0c-2 0-4 2-4 4v20c0 2 2 4 4 4h8c2 0 4-2 4-4V98c0-2-2-4-4-4h-8z" fill="#b9c6d2"/>
+      <path d="M46 98c0 4 3 7 7 7h15c4 0 7-3 7-7V72c0-4-3-7-7-7H53c-4 0-7 3-7 7v26z" fill="#1b2439"/>
+      <path d="M51 61h25l9 40H42l9-40z" fill="#0b1728"/>
+      <circle cx="64" cy="53" r="10" fill="#1d2d48"/>
+      <circle cx="64" cy="53" r="5" fill="#adbfcb"/>
+      <path d="M54 85h20v12H54z" fill="#8ea0b4"/>
+      <path d="M64 16c1-8 6-13 13-14l-3 14-10 0z" fill="#0c1728"/>
+      <path d="M77 16c14 0 23 13 28 20l-9 5c-6-9-11-15-20-18l1-7z" fill="#0c1728"/>
+      <path d="M52 16c-14 0-23 13-28 20l9 5c6-9 11-15 20-18l-1-7z" fill="#0c1728"/>
+      <path d="M45 117h38l5 13H40l5-13z" fill="#0c1728"/>
+      <path d="M51 130h26l6 16H45l6-16z" fill="#dfe7f4"/>
+      <path d="M32 120h6v18h-6zM87 120h6v18h-6z" fill="#dfe7f4"/>
+    </g>
+
+    <g fill="url(#wave)">
+      <path d="M32 186c20-14 40-18 58-13 19 6 24 18 36 17 16-2 23-17 34-19 15-4 33 7 48 16v22H32v-23z" opacity="0.9"/>
+      <path d="M52 196c19-17 40-21 56-15 16 7 22 21 34 20 17-2 26-18 38-20 14-2 31 10 46 23v16H52v-24z" opacity="0.7"/>
+      <path d="M28 214c17-12 38-17 54-12 17 6 26 18 38 18 18 0 27-14 44-18 18-4 35 5 52 17v21H28v-26z" opacity="0.8"/>
+    </g>
+
+    <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" font-weight="900">
+      <text x="130" y="122" fill="#f8fafc" font-size="23" letter-spacing="2">YAMAHA</text>
+      <text x="130" y="168" fill="#f5f8ff" font-size="38" letter-spacing="2">MARINE</text>
+      <text x="130" y="205" fill="#f5f8ff" font-size="22" letter-spacing="4">MOTORS</text>
+    </g>
+
+    <g stroke="#0d1b2f" stroke-width="6" stroke-linecap="round" fill="none">
+      <path d="M26 134c10-8 18-12 31-12"/>
+      <path d="M234 134c-10-8-18-12-31-12"/>
+    </g>
+
+    <g opacity="0.94">
+      <path d="M28 84c15-4 25 3 31 18-13 2-22 10-26 22-7 0-12-5-12-13 0-11 4-20 7-27z" fill="#eaf3ff"/>
+      <path d="M232 84c-15-4-25 3-31 18 13 2 22 10 26 22 7 0 12-5 12-13 0-11-4-20-7-27z" fill="#eaf3ff"/>
+    </g>
+  </g>
+</svg>

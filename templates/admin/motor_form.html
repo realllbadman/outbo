@@ -1,0 +1,157 @@
+{% extends "admin/base.html" %}
+{% from "_macros.html" import field_error, error_attrs %}
+{% macro get(field) %}{% if motor is mapping %}{{ motor.get(field) if motor.get(field) is not none else '' }}{% else %}{{ motor[field] if motor[field] is not none else '' }}{% endif %}{% endmacro %}
+{% block title %}{{ 'Edit motor #' ~ motor_id if motor_id else 'Add motor' }}{% endblock %}
+{% block content %}
+<p class="admin-crumb"><a href="/admin/motors">← All motors</a></p>
+<div class="admin-head">
+  <div>
+    <h1>{% if motor_id %}Edit motor #{{ motor_id }}{% else %}Add a motor{% endif %}</h1>
+    {% if motor_id %}<p class="admin-sub">{{ get('name') }} · <a href="/motors/{{ motor_id }}" target="_blank" rel="noopener">View on the website</a></p>{% endif %}
+  </div>
+</div>
+
+{% if errors %}<div class="photo-banner photo-banner-error" role="alert">Some fields need fixing. They're marked in red below.</div>{% endif %}
+
+<form method="post" action="{{ '/admin/motors/' ~ motor_id ~ '/edit' if motor_id else '/admin/motors/new' }}" class="motor-form">
+  <section class="admin-card">
+    <h2>Basics</h2>
+    <div class="form-grid">
+      <div class="field field-wide">
+        <label for="name">Name <span class="optional">(shown as the title, e.g. "2014 Yamaha F90 90 HP 4-Stroke")</span></label>
+        <input id="name" name="name" required maxlength="200" value="{{ get('name') }}"{{ error_attrs(errors, 'name') }}>
+        {{ field_error(errors, 'name') }}
+      </div>
+      <div class="field">
+        <label for="make">Make</label>
+        <input id="make" name="make" required maxlength="80" value="{{ get('make') }}"{{ error_attrs(errors, 'make') }}>
+        {{ field_error(errors, 'make') }}
+      </div>
+      <div class="field">
+        <label for="model">Model</label>
+        <input id="model" name="model" maxlength="80" value="{{ get('model') }}">
+      </div>
+      <div class="field">
+        <label for="year">Year</label>
+        <input id="year" name="year" inputmode="numeric" value="{{ get('year') }}"{{ error_attrs(errors, 'year') }}>
+        {{ field_error(errors, 'year') }}
+      </div>
+    </div>
+  </section>
+
+  <section class="admin-card">
+    <h2>Specs</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label for="hp">HP</label>
+        <input id="hp" name="hp" required inputmode="numeric" value="{{ get('hp') }}"{{ error_attrs(errors, 'hp') }}>
+        {{ field_error(errors, 'hp') }}
+      </div>
+      <div class="field">
+        <label for="stroke">Stroke</label>
+        <select id="stroke" name="stroke" required>
+          <option value="">Choose</option>
+          {% for s in (2, 4) %}<option value="{{ s }}" {% if get('stroke') == s|string %}selected{% endif %}>{{ s }}-Stroke</option>{% endfor %}
+        </select>
+        {{ field_error(errors, 'stroke') }}
+      </div>
+      <div class="field">
+        <label for="cylinders">Cylinders</label>
+        <input id="cylinders" name="cylinders" inputmode="numeric" value="{{ get('cylinders') }}"{{ error_attrs(errors, 'cylinders') }}>
+        {{ field_error(errors, 'cylinders') }}
+      </div>
+      <div class="field">
+        <label for="shaft">Shaft</label>
+        <input id="shaft" name="shaft" maxlength="40" placeholder='e.g. 20"' value="{{ get('shaft') }}">
+      </div>
+      <div class="field">
+        <label for="hours">Hours</label>
+        <input id="hours" name="hours" inputmode="numeric" value="{{ get('hours') }}"{{ error_attrs(errors, 'hours') }}>
+        {{ field_error(errors, 'hours') }}
+      </div>
+    </div>
+  </section>
+
+  <section class="admin-card">
+    <h2>Sale</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label for="price_usd">Price in USD <span class="optional">(blank = Call for Price)</span></label>
+        <input id="price_usd" name="price_usd" inputmode="numeric" value="{{ get('price_usd') }}"{{ error_attrs(errors, 'price_usd') }}>
+        {{ field_error(errors, 'price_usd') }}
+      </div>
+      <div class="field">
+        <label for="condition">Condition</label>
+        <input id="condition" name="condition" maxlength="40" value="{{ get('condition') }}">
+      </div>
+      <div class="field">
+        <label for="badge">Badge <span class="optional">(small label on the photo, e.g. "Low Hours")</span></label>
+        <input id="badge" name="badge" maxlength="40" value="{{ get('badge') }}">
+      </div>
+      <div class="field">
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          {% for s in statuses %}<option value="{{ s }}" {% if get('status') == s %}selected{% endif %}>{{ 'In stock' if s == 'in_stock' else 'Sold' }}</option>{% endfor %}
+        </select>
+        {{ field_error(errors, 'status') }}
+      </div>
+    </div>
+  </section>
+
+  <section class="admin-card">
+    <h2>Photo</h2>
+    <div class="motor-photo">
+      <div class="photo-thumb" data-form-thumb>
+        <span class="photo-empty"{% if get('image_url') %} hidden{% endif %}>No photo</span>
+        <span class="photo-broken" hidden>Link doesn't load</span>
+        <img src="{{ get('image_url') }}" alt="" referrerpolicy="no-referrer"{% if not get('image_url') %} hidden{% endif %}>
+      </div>
+      <div class="field">
+        <label for="image_url">Image link <span class="optional">(right-click a photo online → Copy image address)</span></label>
+        <input id="image_url" name="image_url" type="url" maxlength="500" placeholder="https://…/photo.jpg" value="{{ get('image_url') }}"{{ error_attrs(errors, 'image_url') }}>
+        {{ field_error(errors, 'image_url') }}
+      </div>
+    </div>
+  </section>
+
+  <section class="admin-card">
+    <h2>Description</h2>
+    <div class="field">
+      <label for="description">Description <span class="optional">(blank = a short summary built from the specs)</span></label>
+      <textarea id="description" name="description" rows="5">{{ get('description') }}</textarea>
+    </div>
+    <div class="field">
+      <label for="notes">Notes <span class="optional">(shown in the spec table)</span></label>
+      <textarea id="notes" name="notes" rows="3">{{ get('notes') }}</textarea>
+    </div>
+  </section>
+
+  <div class="form-savebar">
+    <button class="btn" type="submit">{% if motor_id %}Save changes to #{{ motor_id }}{% else %}Add motor{% endif %}</button>
+    <a href="/admin/motors">Cancel</a>
+  </div>
+</form>
+
+<script>
+(function () {
+  var input = document.getElementById('image_url');
+  var thumb = document.querySelector('[data-form-thumb]');
+  var img = thumb.querySelector('img');
+  function show(state) {
+    thumb.querySelector('.photo-empty').hidden = state !== 'empty';
+    thumb.querySelector('.photo-broken').hidden = state !== 'broken';
+    img.hidden = state !== 'ok';
+  }
+  img.addEventListener('load', function () { if (img.getAttribute('src')) show('ok'); });
+  img.addEventListener('error', function () { if (img.getAttribute('src')) show('broken'); });
+  var timer;
+  input.addEventListener('input', function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      var url = input.value.trim();
+      if (!url) { img.removeAttribute('src'); show('empty'); } else { img.src = url; }
+    }, 300);
+  });
+})();
+</script>
+{% endblock %}

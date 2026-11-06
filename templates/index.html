@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% from "_macros.html" import motor_card %}
+{% block title %}{{ biz.business_name }} | Used Outboard Motors{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-photo photo-wake"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <h1>Power for open water</h1>
+      <a class="hero-box" href="/motors">
+        <span>
+          Used outboards{% if hp_low is not none %}, {{ hp_low }}–{{ hp_high }} HP{% endif %}
+          <small>Crated freight to all 50 states</small>
+        </span>
+        <span class="btn-arrow" aria-hidden="true"></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% if strip %}
+<section class="stock-strip" aria-label="In stock now">
+  <div class="wrap stock-inner">
+    <p class="stock-label">In stock</p>
+    <ul class="stock-list">
+      {% for m in strip %}
+      <li><span>{{ m.hp }} HP</span><a href="/motors/{{ m.id }}">{{ m.name }}</a></li>
+      {% endfor %}
+    </ul>
+    <a class="btn btn-light btn-arrow stock-all" href="/motors">View all {{ motors|length }} motors</a>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="wrap series-list">
+    {% for s in series %}
+    {% set shown = s.motors[:series_preview] %}
+    {% set more = s.motors|length - shown|length %}
+    <article class="split reveal {% if loop.index is even %}split-flip{% endif %}">
+      <div class="split-media"><img src="/static/img/{{ s.image }}" alt="" loading="lazy" onerror="this.remove()"></div>
+      <div>
+        <p class="eyebrow eyebrow-rule">Our outboards</p>
+        <h2>{{ s.title }}</h2>
+        <p class="split-sub">
+          <span>{{ s.label }}</span><span aria-hidden="true">|</span>
+          <span>{% if s.hp_low == s.hp_high %}{{ s.hp_low }}{% else %}{{ s.hp_low }}–{{ s.hp_high }}{% endif %} HP</span>
+        </p>
+        <ul class="split-models">
+          {% for m in shown %}
+          <li><a href="/motors/{{ m.id }}">{{ m.name }}<span>{{ m.price_usd|money }}</span></a></li>
+          {% endfor %}
+        </ul>
+        {% if more > 0 %}<p class="split-more">+ {{ more }} more in this range</p>{% endif %}
+        <a class="btn btn-wide btn-arrow" href="{{ s.url }}">View all {{ s.motors|length }} motor{{ 's' if s.motors|length != 1 }}</a><br>
+        <a class="text-link" href="/motors">See all models</a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section section-tight" id="inventory">
+  <div class="wrap">
+    <div class="section-head section-head-row reveal">
+      <h2 class="tracked">Latest motors</h2>
+      <a class="text-link" href="/motors">View all {{ motors|length }} →</a>
+    </div>
+    <div class="motor-grid stagger">
+      {% for m in featured %}{{ motor_card(m) }}{% endfor %}
+    </div>
+    {% if motors|length > featured|length %}
+    <div class="view-all">
+      <a class="btn btn-wide btn-arrow" href="/motors">View all {{ motors|length }} motors</a>
+      <p>Filter by brand, horsepower, stroke and cylinders.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="photo-band photo-sea">
+  <div class="wrap band-inner reveal">
+    <p class="eyebrow eyebrow-rule">Nationwide</p>
+    <h2>Crated and shipped to your door</h2>
+    <p>Every motor ships crated by freight, to all 50 states. Send your ZIP code and we'll include the freight cost in your quote.</p>
+    <dl class="stat-row stagger">
+      <div><dt>Motors in stock</dt><dd>{{ motors|length }}</dd></div>
+      {% if hp_low is not none %}<div><dt>Horsepower range</dt><dd>{{ hp_low }}–{{ hp_high }}</dd></div>{% endif %}
+      <div><dt>States we ship to</dt><dd>50</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section section-mist">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow eyebrow-rule">Why us</p>
+      <h2>Plain dealing, start to finish</h2>
+    </div>
+    <div class="feature-grid stagger">
+      <div class="feature"><h3>Specs without padding</h3><p>We list the details we have for each motor. If a figure isn't known, it's left blank rather than guessed.</p></div>
+      <div class="feature"><h3>Talk to a person</h3><p>Message us on WhatsApp, call, text or email about any motor before you decide.</p></div>
+      <div class="feature"><h3>Freight handled</h3><p>Motors ship crated by freight to all 50 states, with the cost set out in your quote.</p></div>
+      <div class="feature"><h3>Financing option</h3><p>Financing is available and arranged individually. Ask about it when you enquire.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow eyebrow-rule">How it works</p>
+      <h2>From cart to delivery</h2>
+    </div>
+    <ol class="steps stagger">
+      <li><span class="step-num">01</span><h3>Pick a motor</h3><p>Find the motor you want and add it to your cart.</p></li>
+      <li><span class="step-num">02</span><h3>Check out</h3><p>Enter your delivery details, choose a payment option, and send your order request for review.</p></li>
+      <li><span class="step-num">03</span><h3>Freight confirmed</h3><p>We confirm the freight cost for your address before your motor ships.</p></li>
+      <li><span class="step-num">04</span><h3>Delivery</h3><p>Your motor is crated and sent by freight to your address.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="photo-band photo-teal">
+  <div class="wrap band-inner reveal">
+    <h2>Looking for a specific motor?</h2>
+    <p>Tell us what you're running and we'll get back to you.</p>
+    <div class="band-action"><a class="btn btn-light btn-wide btn-arrow" href="/quote" data-quote>Get a Quote</a></div>
+  </div>
+</section>
+{% endblock %}

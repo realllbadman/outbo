@@ -1,0 +1,46 @@
+{% extends "admin/base.html" %}
+{% block title %}Enquiry #{{ enquiry.id }}{% endblock %}
+{% block content %}
+<p class="admin-crumb"><a href="/admin">← All enquiries</a></p>
+<div class="admin-head">
+  <div>
+    <h1>Enquiry #{{ enquiry.id }} · {{ enquiry.name }}</h1>
+    <p class="admin-sub">Received {{ enquiry.created_at.strftime('%d %b %Y at %H:%M') }} UTC · <span class="status status-{{ enquiry.status }}">{{ enquiry.status|capitalize }}</span></p>
+  </div>
+</div>
+
+<div class="admin-split">
+  <section class="admin-card">
+    <h2>Details</h2>
+    <dl class="admin-details">
+      <dt>Email</dt><dd><a href="mailto:{{ enquiry.email }}">{{ enquiry.email }}</a></dd>
+      <dt>Phone / WhatsApp</dt><dd><a href="tel:{{ enquiry.phone }}">{{ enquiry.phone }}</a></dd>
+      <dt>Motor</dt><dd>{{ enquiry.motor_of_interest|dash }}</dd>
+      <dt>Shipping ZIP</dt><dd>{{ enquiry.shipping_zip|dash }}</dd>
+    </dl>
+    <h3>Message</h3>
+    <p class="pre-wrap admin-message">{{ enquiry.message }}</p>
+    <div class="admin-quick">
+      <a class="btn btn-sm" href="mailto:{{ enquiry.email }}?subject=Re: your enquiry">Reply by email</a>
+      <a class="btn btn-sm btn-outline" href="tel:{{ enquiry.phone }}">Call</a>
+    </div>
+  </section>
+
+  <section class="admin-card">
+    <h2>Follow-up</h2>
+    <form class="admin-form" method="post" action="/admin/enquiry/{{ enquiry.id }}">
+      <div class="field">
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          {% for s in statuses %}<option value="{{ s }}" {% if enquiry.status == s %}selected{% endif %}>{{ s|capitalize }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="internal_notes">Internal notes <span class="optional">(only you see these)</span></label>
+        <textarea id="internal_notes" name="internal_notes" rows="6">{{ enquiry.internal_notes or '' }}</textarea>
+      </div>
+      <button class="btn btn-sm" type="submit">Save follow-up</button>
+    </form>
+  </section>
+</div>
+{% endblock %}
