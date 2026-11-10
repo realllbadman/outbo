@@ -46,8 +46,8 @@
         </form>
         {% endif %}
         <p class="detail-contact">
-          Or talk to us: <a href="{{ biz.whatsapp_url }}" rel="noopener">WhatsApp</a> ·
-          <a href="{{ biz.phone_url }}">{{ biz.phone_display }}</a>
+          Or talk to us: <a href="{{ biz.whatsapp_url }}" rel="noopener">WhatsApp {{ biz.whatsapp_display }}</a> ·
+          <a href="{{ biz.phone_url }}">Call &amp; SMS {{ biz.phone_display }}</a>
         </p>
         {% endif %}
         <table class="spec-table">

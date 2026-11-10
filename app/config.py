@@ -32,6 +32,8 @@ class Settings:
     whatsapp_url: str = "https://wa.me/19498168565"
     phone_display: str = "+1 850 343 7282"
     phone_url: str = "tel:+18503437282"
+    # The same number takes texts.
+    sms_url: str = "sms:+18503437282"
 
     # Used for the admin link in alert emails, so it can't be spoofed via the Host header.
     site_url: str = os.getenv("SITE_URL", f"http://localhost:{os.getenv('PORT', '8030')}").rstrip("/")

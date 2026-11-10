@@ -69,7 +69,7 @@ async def notify_enquiry(enquiry: dict, known_motor: Optional[str]) -> None:
             f"Thanks — we got {about}, and we'll reply shortly.\n\n"
             "If you'd rather talk now:\n"
             f"WhatsApp: {settings.whatsapp_display}\n"
-            f"Call / SMS: {settings.phone_display}\n\n"
+            f"Call & SMS: {settings.phone_display}\n\n"
             f"{settings.business_name}\n"
             f"{settings.business_location}\n"
         ),
@@ -114,6 +114,6 @@ async def notify_order_request(order: dict) -> None:
             f"Delivery: {order.get('delivery_type_label') or '—'}, {order['address']}, {order['city']}, {order['state']} {order['shipping_zip']}\n\n"
             f"Items:\n{item_lines}\n\n"
             f"Subtotal: ${order['subtotal']:,.2f}\n\n"
-            f"If you need to talk sooner, call {settings.phone_display} or message on WhatsApp: {settings.whatsapp_url}."
+            f"If you need to talk sooner, call or text {settings.phone_display}, or WhatsApp {settings.whatsapp_display} ({settings.whatsapp_url})."
         ),
     )
